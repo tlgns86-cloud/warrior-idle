@@ -9,8 +9,10 @@ const T = 64; // 타일 크기
 const COLS = 48, ROWS = 36;
 const WORLD_W = COLS * T, WORLD_H = ROWS * T;
 const HERO_ORIGIN = { x: 88 / 176, y: 232 / 240 };
-/** 필드에서는 주인공 이미지(캐릭터 키 220px)를 절반 크기로 표시 */
-const HERO_SCALE = 0.5;
+/** 필드에서는 주인공 이미지(캐릭터 키 220px)를 1/3 크기(약 73px)로 표시 */
+const HERO_SCALE = 1 / 3;
+/** 베기 자세의 앞뒤 이동 폭을 캐릭터 크기에 맞춘다 (기준: 절반 크기일 때) */
+const POSE_K = HERO_SCALE / 0.5;
 const FONT = '"Noto Serif KR", serif';
 const HUD_DEPTH = 1_000_000;
 
@@ -70,7 +72,7 @@ export class RpgScene extends Phaser.Scene {
     this.buildMap();
 
     this.hx = 9 * T; this.hy = 15 * T;
-    this.heroShadow = this.add.image(0, 0, 'rg_shadow').setScale(0.9, 0.8);
+    this.heroShadow = this.add.image(0, 0, 'rg_shadow').setScale(0.6, 0.55);
     this.hero = this.add.image(0, 0, 'hero').setOrigin(HERO_ORIGIN.x, HERO_ORIGIN.y);
     this.nameTag = this.add.text(0, 0, '무사', { fontFamily: FONT, fontSize: '15px', color: '#ffffff', stroke: '#000', strokeThickness: 4 })
       .setOrigin(0.5, 1);
@@ -261,7 +263,7 @@ export class RpgScene extends Phaser.Scene {
       if (m.dead || this.dead) return;
       const dmg = Math.round(m.atk * (0.8 + rnd() * 0.4));
       this.hp -= dmg;
-      this.floatText(this.hx, this.hy - 120, `-${dmg}`, '#ff6b5a', 20);
+      this.floatText(this.hx, this.hy - 95, `-${dmg}`, '#ff6b5a', 20);
       this.hero.setTintFill(0xff5040);
       this.time.delayedCall(80, () => this.hero.clearTint());
       if (this.hp <= 0) this.heroDie();
@@ -298,10 +300,10 @@ export class RpgScene extends Phaser.Scene {
       const t = this.target;
       const d = Math.hypot(t.x - this.hx, t.y - this.hy);
       this.facing = t.x >= this.hx ? 1 : -1;
-      if (d < 80) {
+      if (d < 66) {
         goal = null;
         if (this.attackT < 0 && this.atkCd <= 0) { this.attackT = 0; this.hitDone = false; this.atkCd = 0.75; }
-      } else goal = { x: t.x - this.facing * 60, y: t.y };
+      } else goal = { x: t.x - this.facing * 48, y: t.y };
     }
     if (goal && this.attackT < 0) {
       const dx = goal.x - this.hx, dy = goal.y - this.hy, d = Math.hypot(dx, dy);
@@ -340,14 +342,14 @@ export class RpgScene extends Phaser.Scene {
     }
     const f = this.facing;
     const x = Math.round(this.hx), y = Math.round(this.hy);
-    this.hero.setFlipX(f < 0).setPosition(x + ox * f, y + oy).setAngle(ang * f).setScale(HERO_SCALE).setDepth(y + 0.5);
+    this.hero.setFlipX(f < 0).setPosition(x + ox * POSE_K * f, y + oy).setAngle(ang * f).setScale(HERO_SCALE).setDepth(y + 0.5);
     this.heroShadow.setPosition(x, y + 2).setDepth(y - 1);
-    this.nameTag.setPosition(x, y - 118 + oy).setDepth(HUD_DEPTH - 20);
+    this.nameTag.setPosition(x, y - 84 + oy).setDepth(HUD_DEPTH - 20);
   }
 
   private heroHit(): void {
     const t = this.target;
-    if (!t || t.dead || Math.hypot(t.x - this.hx, t.y - this.hy) > 95) return;
+    if (!t || t.dead || Math.hypot(t.x - this.hx, t.y - this.hy) > 82) return;
     const crit = rnd() < 0.15;
     const dmg = Math.round((16 + this.lv * 4 + rnd() * 8) * (crit ? 2 : 1));
     t.hp -= dmg; t.aggro = true;
@@ -375,8 +377,8 @@ export class RpgScene extends Phaser.Scene {
     if (this.exp >= need) {
       this.exp -= need; this.lv++;
       this.maxHp += 30; this.hp = this.maxHp; this.mp = this.maxMp;
-      this.floatText(this.hx, this.hy - 150, 'LEVEL UP!', '#ffe28a', 28);
-      const ring = this.add.circle(this.hx, this.hy - 50, 20, 0xffe28a, 0).setStrokeStyle(4, 0xffe28a).setDepth(HUD_DEPTH - 12);
+      this.floatText(this.hx, this.hy - 115, 'LEVEL UP!', '#ffe28a', 28);
+      const ring = this.add.circle(this.hx, this.hy - 36, 20, 0xffe28a, 0).setStrokeStyle(4, 0xffe28a).setDepth(HUD_DEPTH - 12);
       this.tweens.add({ targets: ring, radius: 110, alpha: 0, duration: 600, onComplete: () => ring.destroy() });
     }
     // 잠시 후 제자리에서 다시 등장
@@ -394,7 +396,7 @@ export class RpgScene extends Phaser.Scene {
   private heroDie(): void {
     this.dead = true; this.hp = 0; this.target = null; this.moveTo = null;
     this.hero.setTint(0x777788).setAngle(-80 * this.facing);
-    this.floatText(this.hx, this.hy - 140, '사망… 마을에서 부활합니다', '#d0d0e0', 18);
+    this.floatText(this.hx, this.hy - 110, '사망… 마을에서 부활합니다', '#d0d0e0', 18);
     for (const m of this.mobs) m.aggro = false;
     this.time.delayedCall(2200, () => {
       this.dead = false; this.hp = this.maxHp; this.mp = this.maxMp;
