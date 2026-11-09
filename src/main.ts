@@ -6,14 +6,34 @@ import { UIScene } from './scenes/UIScene';
 import { IdleBattleScene } from './idle/IdleBattleScene';
 import { IdleGame } from './idle/model';
 import { IdleUI } from './idle/ui';
+import { RpgScene } from './rpg/RpgScene';
 import './idle/style.css';
 
 // ?training 을 붙이면 기존 수련장(직접 조작) 모드, 기본은 방치형 키우기 모드
-const training = new URLSearchParams(location.search).has('training');
-document.body.classList.add(training ? 'training' : 'idle');
+const params = new URLSearchParams(location.search);
+const training = params.has('training');
+const rpg = params.has('rpg');
+// ?rpg: 탑다운 필드 RPG 미리보기
+document.body.classList.add(training ? 'training' : rpg ? 'rpg' : 'idle');
 
 if (training) startTraining();
+else if (rpg) startRpg();
 else startIdle();
+
+function startRpg(): void {
+  const game = new Phaser.Game({
+    type: Phaser.AUTO,
+    parent: 'game',
+    backgroundColor: '#1c2a18',
+    pixelArt: true,
+    roundPixels: true,
+    scale: { mode: Phaser.Scale.RESIZE, width: window.innerWidth, height: window.innerHeight },
+    input: { activePointers: 2 },
+    scene: [BootScene, RpgScene],
+    callbacks: { preBoot: (g) => g.registry.set('mode', 'rpg') },
+  });
+  (window as unknown as { game: Phaser.Game }).game = game;
+}
 
 function startTraining(): void {
   /** 화면 높이를 720 으로 고정하고, 가로 폭은 기기 비율에 맞춘다 (가로 모드 기준) */

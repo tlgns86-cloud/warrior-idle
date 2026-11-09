@@ -88,6 +88,11 @@ export class BootScene extends Phaser.Scene {
 
     registerAnimations(this, manifest);
     generateTextures(this);
+    if (this.registry.get('mode') === 'rpg') {
+      generateIdleTextures(this);
+      this.scene.start('Rpg');
+      return;
+    }
     if (this.registry.get('mode') === 'idle') {
       generateIdleTextures(this);
       this.scene.start('IdleBattle');
