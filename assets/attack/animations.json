@@ -1,0 +1,35 @@
+{
+  "frame_size": [
+    256,
+    256
+  ],
+  "pivot": [
+    128,
+    240
+  ],
+  "fps": 10,
+  "loop": false,
+  "animations": {
+    "left": [
+      "left/attack_left_00.png",
+      "left/attack_left_01.png",
+      "left/attack_left_02.png",
+      "left/attack_left_03.png",
+      "left/attack_left_04.png",
+      "left/attack_left_05.png",
+      "left/attack_left_06.png",
+      "left/attack_left_07.png"
+    ],
+    "right": [
+      "right/attack_right_00.png",
+      "right/attack_right_01.png",
+      "right/attack_right_02.png",
+      "right/attack_right_03.png",
+      "right/attack_right_04.png",
+      "right/attack_right_05.png",
+      "right/attack_right_06.png",
+      "right/attack_right_07.png"
+    ]
+  },
+  "note": "Frames 05 and 06 are reconstructed from intact poses with added slash arcs, not hand-redrawn animation."
+}

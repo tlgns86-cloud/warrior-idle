@@ -1,0 +1,45 @@
+{
+  "frame_size": [
+    256,
+    256
+  ],
+  "pivot": [
+    128,
+    240
+  ],
+  "fps": 10,
+  "directions": {
+    "front": [
+      "front/walk_00.png",
+      "front/walk_01.png",
+      "front/walk_02.png",
+      "front/walk_03.png",
+      "front/walk_04.png",
+      "front/walk_05.png"
+    ],
+    "back": [
+      "back/walk_00.png",
+      "back/walk_01.png",
+      "back/walk_02.png",
+      "back/walk_03.png",
+      "back/walk_04.png",
+      "back/walk_05.png"
+    ],
+    "left": [
+      "left/walk_00.png",
+      "left/walk_01.png",
+      "left/walk_02.png",
+      "left/walk_03.png",
+      "left/walk_04.png",
+      "left/walk_05.png"
+    ],
+    "right": [
+      "right/walk_00.png",
+      "right/walk_01.png",
+      "right/walk_02.png",
+      "right/walk_03.png",
+      "right/walk_04.png",
+      "right/walk_05.png"
+    ]
+  }
+}

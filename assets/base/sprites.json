@@ -1,0 +1,48 @@
+{
+  "canvas": {
+    "width": 256,
+    "height": 256
+  },
+  "pivot": {
+    "x": 128,
+    "y": 240
+  },
+  "directions": {
+    "front": {
+      "file": "warrior_front_256.png",
+      "bounds": {
+        "x": 54,
+        "y": 16,
+        "width": 148,
+        "height": 224
+      }
+    },
+    "back": {
+      "file": "warrior_back_256.png",
+      "bounds": {
+        "x": 49,
+        "y": 16,
+        "width": 159,
+        "height": 224
+      }
+    },
+    "left": {
+      "file": "warrior_left_256.png",
+      "bounds": {
+        "x": 60,
+        "y": 16,
+        "width": 137,
+        "height": 224
+      }
+    },
+    "right": {
+      "file": "warrior_right_256.png",
+      "bounds": {
+        "x": 62,
+        "y": 16,
+        "width": 133,
+        "height": 224
+      }
+    }
+  }
+}

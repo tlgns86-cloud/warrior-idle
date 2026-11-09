@@ -1,0 +1,4 @@
+node_modules
+dist
+public/assets
+.claude/settings.local.json

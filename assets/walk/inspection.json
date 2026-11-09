@@ -1,0 +1,82 @@
+{
+  "front": {
+    "torso_centers_before_px": [
+      138.54,
+      139.37,
+      134.19,
+      132.81,
+      135.26,
+      133.67
+    ],
+    "target_px": 134.73,
+    "horizontal_adjustments_px": [
+      -4,
+      -5,
+      1,
+      2,
+      -1,
+      1
+    ],
+    "note": "Only small horizontal translations. Walking stride intentionally retained."
+  },
+  "back": {
+    "torso_centers_before_px": [
+      122.06,
+      121.41,
+      121.24,
+      127.75,
+      124.49,
+      123.98
+    ],
+    "target_px": 123.02,
+    "horizontal_adjustments_px": [
+      1,
+      2,
+      2,
+      -5,
+      -1,
+      -1
+    ],
+    "note": "Only small horizontal translations. Walking stride intentionally retained."
+  },
+  "left": {
+    "torso_centers_before_px": [
+      124.37,
+      132.63,
+      120.14,
+      124.34,
+      123.11,
+      123.31
+    ],
+    "target_px": 123.82,
+    "horizontal_adjustments_px": [
+      -1,
+      -5,
+      4,
+      -1,
+      1,
+      1
+    ],
+    "note": "Only small horizontal translations. Walking stride intentionally retained."
+  },
+  "right": {
+    "torso_centers_before_px": [
+      132.41,
+      129.48,
+      131.28,
+      134.15,
+      127.97,
+      128.25
+    ],
+    "target_px": 130.38,
+    "horizontal_adjustments_px": [
+      -2,
+      1,
+      -1,
+      -4,
+      2,
+      2
+    ],
+    "note": "Only small horizontal translations. Walking stride intentionally retained."
+  }
+}

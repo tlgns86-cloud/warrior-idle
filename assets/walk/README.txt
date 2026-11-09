@@ -1,0 +1,1 @@
+24 corrected 256x256 RGBA PNGs. Horizontal torso stabilization only, maximum 5px per frame. Feet are not individually redrawn; walking stride retained. GIFs include checkerboard and y=240 reference line. Original frames remain unchanged in previous ZIP.
