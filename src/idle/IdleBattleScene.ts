@@ -23,9 +23,9 @@ const FONT = '"Noto Serif KR", "Nanum Myeongjo", serif';
 const WALK_SPEED = 230; // 배경 흐르는 속도(px/s)
 const MON_SPEED = 170;
 const MAX_ON_FIELD = 3;
-/** 주인공 이미지(128x128)를 2배 정수 배율로 그린다. 발 기준점은 원본 (64, 118) */
-const HERO_SCALE = 2;
-const HERO_ORIGIN = { x: 63.5 / 128, y: 117.5 / 128 };
+/** 주인공 이미지(176x240, scripts/make-hero.mjs 로 생성)를 원본 크기로 그린다. 발 중앙 = (88, 232) */
+const HERO_SCALE = 1;
+const HERO_ORIGIN = { x: 88 / 176, y: 232 / 240 };
 /** 기본 공격 1회 시간(초). 공격 속도 배율로 나눈다 */
 const ATTACK_TIME = 0.8;
 
@@ -172,10 +172,10 @@ export class IdleBattleScene extends Phaser.Scene {
     }
   }
 
-  /** 공격: 뒤로 젖히며 준비 → 앞으로 내지르며 베기(판정) → 복귀. 걷기: 통통 튀는 흔들림 */
-  private animateHero(dt: number, walking: boolean): void {
+  /** 공격: 뒤로 젖히며 준비 → 앞으로 내지르며 베기(판정) → 복귀. 대기·이동 중에는 움직임 없음 */
+  private animateHero(dt: number, _walking: boolean): void {
     const p = this.pose;
-    let x = 0, y = 0, ang = 0, sx = 1, sy = 1;
+    let x = 0; const y = 0; let ang = 0, sx = 1, sy = 1;
     if (this.heroState === 'attack') {
       p.t += (dt * this.g.attackSpeed()) / ATTACK_TIME;
       const t = Math.min(1, p.t);
@@ -193,13 +193,6 @@ export class IdleBattleScene extends Phaser.Scene {
       if (p.t >= 1) { this.heroState = 'ready'; p.t = 0; }
     } else if (this.heroState === 'dash') {
       ang = 12; sx = 1.06; sy = 0.95;
-    } else if (walking) {
-      p.walk += dt * 11;
-      const b = Math.abs(Math.sin(p.walk));
-      y = -b * 10; ang = Math.sin(p.walk) * 3; sy = 1 + b * 0.03; sx = 1 - b * 0.02;
-    } else {
-      p.walk += dt * 3;
-      sy = 1 + Math.sin(p.walk) * 0.015;
     }
     this.hero.setPosition(this.heroX + x + p.dash, GROUND_Y + y).setAngle(ang).setScale(HERO_SCALE * sx, HERO_SCALE * sy);
     this.heroShadow.setPosition(this.heroX + x * 0.6 + p.dash, GROUND_Y + 2).setScale(1.1 + y / 120, 1 + y / 120);

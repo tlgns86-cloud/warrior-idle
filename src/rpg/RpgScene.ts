@@ -7,7 +7,9 @@ import type { MonsterKind } from '../idle/model';
 const T = 64; // 타일 크기
 const COLS = 48, ROWS = 36;
 const WORLD_W = COLS * T, WORLD_H = ROWS * T;
-const HERO_ORIGIN = { x: 63.5 / 128, y: 117.5 / 128 };
+const HERO_ORIGIN = { x: 88 / 176, y: 232 / 240 };
+/** 필드에서는 주인공 이미지(캐릭터 키 220px)를 절반 크기로 표시 */
+const HERO_SCALE = 0.5;
 const FONT = '"Noto Serif KR", serif';
 const HUD_DEPTH = 1_000_000;
 
@@ -41,7 +43,6 @@ export class RpgScene extends Phaser.Scene {
   private facing = 1;
   private moveTo: { x: number; y: number } | null = null;
   private target: Mob | null = null;
-  private walkPhase = 0;
   private attackT = -1; private hitDone = false; private atkCd = 0;
   private hp = 200; private maxHp = 200; private mp = 80; private maxMp = 80;
   private lv = 1; private exp = 0;
@@ -63,6 +64,8 @@ export class RpgScene extends Phaser.Scene {
   create(): void {
     seed = 7;
     makeFieldTextures(this);
+    // 절반 크기로 줄여 그리므로 부드럽게 보간 (나머지 픽셀아트는 nearest 유지)
+    this.textures.get('hero').setFilter(Phaser.Textures.FilterMode.LINEAR);
     this.buildMap();
 
     this.hx = 9 * T; this.hy = 15 * T;
@@ -320,9 +323,10 @@ export class RpgScene extends Phaser.Scene {
     this.updateHud();
   }
 
-  /** 단일 이미지에 코드로 동작을 입힌다: 걷기 흔들림 / 베기 자세 / 숨쉬기 */
-  private placeHero(dt: number, moving = false): void {
-    let ox = 0, oy = 0, ang = 0, sx = 1, sy = 1;
+  /** 단일 이미지에 코드로 베기 자세만 입힌다 (대기·이동 중에는 움직임 없음) */
+  private placeHero(dt: number, _moving = false): void {
+    let ox = 0, ang = 0;
+    const oy = 0;
     if (this.attackT >= 0) {
       this.attackT += dt / 0.5;
       const t = Math.min(1, this.attackT);
@@ -332,17 +336,10 @@ export class RpgScene extends Phaser.Scene {
         if (!this.hitDone && t >= 0.42) { this.hitDone = true; this.heroHit(); }
       } else { const k = (t - 0.5) / 0.5; ang = 16 * (1 - k); ox = 22 * (1 - k); }
       if (this.attackT >= 1) this.attackT = -1;
-    } else if (moving) {
-      this.walkPhase += dt * 12;
-      const b = Math.abs(Math.sin(this.walkPhase));
-      oy = -b * 7; ang = Math.sin(this.walkPhase) * 4; sy = 1 + b * 0.03;
-    } else {
-      this.walkPhase += dt * 3;
-      sy = 1 + Math.sin(this.walkPhase) * 0.015;
     }
     const f = this.facing;
     const x = Math.round(this.hx), y = Math.round(this.hy);
-    this.hero.setFlipX(f < 0).setPosition(x + ox * f, y + oy).setAngle(ang * f).setScale(sx, sy).setDepth(y + 0.5);
+    this.hero.setFlipX(f < 0).setPosition(x + ox * f, y + oy).setAngle(ang * f).setScale(HERO_SCALE).setDepth(y + 0.5);
     this.heroShadow.setPosition(x, y + 2).setDepth(y - 1);
     this.nameTag.setPosition(x, y - 118 + oy).setDepth(HUD_DEPTH - 20);
   }
@@ -473,7 +470,7 @@ export class RpgScene extends Phaser.Scene {
   private ensurePortrait(): void {
     if (this.portrait) return;
     // 상태창 얼굴: 주인공 이미지의 머리 부분을 잘라서 표시
-    this.portrait = this.add.image(44, 50, 'hero').setCrop(40, 18, 56, 52).setScale(1).setOrigin(0.53, 0.33)
+    this.portrait = this.add.image(44, 47, 'hero').setCrop(42, 22, 76, 70).setScale(0.62).setOrigin(80 / 176, 58 / 240)
       .setScrollFactor(0).setDepth(HUD_DEPTH + 1);
   }
 }
