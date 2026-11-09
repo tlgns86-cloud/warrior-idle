@@ -20,7 +20,12 @@ export interface AssetManifest {
   animations: Partial<Record<AnimName, AnimationEntry>>;
   notes: string[];
   warnings: string[];
+  /** 주인공 이미지 내용 해시 (캐시 무효화용) */
+  heroVersion?: string;
 }
+
+/** 주인공 이미지 주소. 내용이 바뀌면 ?v= 가 바뀌어 새로 받는다 */
+export const heroUrl = (m?: AssetManifest) => `assets/hero/warrior.png?v=${m?.heroVersion ?? Date.now()}`;
 
 export const DIRECTIONS: Direction[] = ['left', 'right'];
 export const ANIM_NAMES: AnimName[] = ['idle', 'walk', 'attack'];

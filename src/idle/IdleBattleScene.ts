@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { DEPTH, GROUND_Y } from '../config';
+import { MANIFEST_KEY, heroUrl, type AssetManifest } from '../assets/manifest';
 import {
   IdleGame, dashMult, fmtNum, whirlMult, zoneIndex, zoneOf, type SkillId,
 } from './model';
@@ -56,7 +57,7 @@ export class IdleBattleScene extends Phaser.Scene {
   }
 
   preload(): void {
-    this.load.image('hero', 'assets/hero/warrior.png');
+    this.load.image('hero', heroUrl(this.cache.json.get(MANIFEST_KEY) as AssetManifest | undefined));
   }
 
   create(): void {

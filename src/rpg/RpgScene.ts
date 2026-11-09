@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { monsterKey } from '../idle/monsterArt';
+import { MANIFEST_KEY, heroUrl, type AssetManifest } from '../assets/manifest';
 import type { MonsterKind } from '../idle/model';
 
 // 탑다운 필드 RPG 미리보기: 주인공 이미지가 실제 필드 플레이에서 어떻게 보이는지 확인용 프로토타입.
@@ -58,7 +59,7 @@ export class RpgScene extends Phaser.Scene {
   constructor() { super('Rpg'); }
 
   preload(): void {
-    this.load.image('hero', 'assets/hero/warrior.png');
+    this.load.image('hero', heroUrl(this.cache.json.get(MANIFEST_KEY) as AssetManifest | undefined));
   }
 
   create(): void {

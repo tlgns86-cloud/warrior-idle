@@ -21,7 +21,8 @@ export class BootScene extends Phaser.Scene {
     this.load.on(Phaser.Loader.Events.FILE_LOAD_ERROR, (file: Phaser.Loader.File) => {
       this.failed.push(`${file.key} → ${file.url}`);
     });
-    this.load.json(MANIFEST_KEY, MANIFEST_URL);
+    // 목록 파일은 매번 새로 받는다 (배포 직후에도 최신 에셋 버전을 알 수 있도록)
+    this.load.json(MANIFEST_KEY, `${MANIFEST_URL}?t=${Date.now()}`);
   }
 
   create(): void {

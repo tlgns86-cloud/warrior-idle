@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PNG } from 'pngjs';
+import crypto from 'node:crypto';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = path.join(ROOT, 'assets');
@@ -129,6 +130,8 @@ const heroSrc = path.join(SRC, 'hero', 'warrior.png');
 if (fs.existsSync(heroSrc)) {
   fs.mkdirSync(path.join(OUT, 'hero'), { recursive: true });
   fs.copyFileSync(heroSrc, path.join(OUT, 'hero', 'warrior.png'));
+  // 이미지가 바뀌면 주소도 바뀌게 해서 브라우저 캐시에 남은 옛 이미지를 쓰지 않도록 한다
+  manifest.heroVersion = crypto.createHash('sha1').update(fs.readFileSync(heroSrc)).digest('hex').slice(0, 10);
 } else {
   errors.push('assets/hero/warrior.png 없음 (키우기 모드 주인공 이미지)');
 }
